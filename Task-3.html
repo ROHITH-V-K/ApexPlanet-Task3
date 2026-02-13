@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 3 - Advanced Styling & JavaScript</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #e0f5ef, #ffffff);
+}
+
+header {
+    background: #0d5c4a;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+}
+
+
+.section {
+    background: white;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #0d5c4a;
+}
+
+
+.quiz-option {
+    display: block;
+    margin: 8px 0;
+    padding: 8px;
+    border-radius: 5px;
+    background: #e6f2ef;
+    cursor: pointer;
+}
+
+.quiz-option:hover {
+    background: #c7ebe2;
+}
+
+button {
+    background: #0d5c4a;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #083d31;
+}
+
+.carousel {
+    text-align: center;
+}
+
+.carousel img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+
+#joke {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    .carousel img {
+        max-height: 200px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        width: 70%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Advanced Styling and JavaScript</h1>
+    <p>Task - 3 Project</p>
+</header>
+
+<div class="container">
+
+    
+    <div class="section">
+        <h2>Interactive Quiz</h2>
+        <p id="question"></p>
+        <div id="options"></div>
+        <button onclick="nextQuestion()">Next Question</button>
+        <p id="score"></p>
+    </div>
+
+
+    <div class="section carousel">
+        <h2>Image Carousel</h2>
+        <img id="carouselImage" src="" alt="Carousel Image">
+        <br>
+        <button onclick="prevImage()">Previous</button>
+        <button onclick="nextImage()">Next</button>
+    </div>
+
+  
+    <div class="section">
+        <h2>Fetch Data from API</h2>
+        <button onclick="fetchJoke()">Get Random Joke</button>
+        <p id="joke"></p>
+    </div>
+
+</div>
+
+<script>
+
+
+const quizData = [
+    {
+        question: "Which language is used for styling web pages?",
+        options: ["HTML", "CSS", "Java", "Python"],
+        answer: "CSS"
+    },
+    {
+        question: "Which method is used to fetch data from API?",
+        options: ["getData()", "fetch()", "request()", "apiCall()"],
+        answer: "fetch()"
+    },
+    {
+        question: "Which CSS feature makes website responsive?",
+        options: ["Flexbox", "Media Queries", "Grid", "All of the above"],
+        answer: "All of the above"
+    }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+function loadQuestion() {
+    const q = quizData[currentQuestion];
+    document.getElementById("question").innerText = q.question;
+    const optionsDiv = document.getElementById("options");
+    optionsDiv.innerHTML = "";
+
+    q.options.forEach(option => {
+        const btn = document.createElement("div");
+        btn.classList.add("quiz-option");
+        btn.innerText = option;
+        btn.onclick = () => checkAnswer(option);
+        optionsDiv.appendChild(btn);
+    });
+}
+
+function checkAnswer(selected) {
+    if (selected === quizData[currentQuestion].answer) {
+        score++;
+        alert("Correct!");
+    } else {
+        alert("Wrong!");
+    }
+}
+
+function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < quizData.length) {
+        loadQuestion();
+    } else {
+        document.getElementById("score").innerText =
+            "Quiz Completed! Your Score: " + score;
+        document.getElementById("question").innerText = "";
+        document.getElementById("options").innerHTML = "";
+    }
+}
+
+loadQuestion();
+
+
+const images = [
+    "https://picsum.photos/800/300?random=1",
+    "https://picsum.photos/800/300?random=2",
+    "https://picsum.photos/800/300?random=3"
+];
+
+let currentImage = 0;
+const carouselImage = document.getElementById("carouselImage");
+
+function showImage() {
+    carouselImage.src = images[currentImage];
+}
+
+function nextImage() {
+    currentImage = (currentImage + 1) % images.length;
+    showImage();
+}
+
+function prevImage() {
+    currentImage = (currentImage - 1 + images.length) % images.length;
+    showImage();
+}
+
+setInterval(nextImage, 4000);
+showImage();
+
+
+function fetchJoke() {
+    fetch("https://official-joke-api.appspot.com/random_joke")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("joke").innerText =
+                data.setup + " 😂 " + data.punchline;
+        })
+        .catch(error => {
+            document.getElementById("joke").innerText =
+                "Failed to fetch joke.";
+        });
+}
+
+</script>
+
+</body>
+</html>
